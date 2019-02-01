@@ -1,0 +1,27 @@
+.wrapper
+  position: relative
+  .overlay
+    display: none
+    position: absolute
+    top: 0
+    bottom: 0
+    right: 0
+    left: 0
+    z-index: 1000
+    &.is-loading
+      display: flex
+      align-items: center
+      justify-content: center
+      background-color: rgba(230, 230, 230, 0.5)
+    .loader
+      .spinner-wave-margin-correction div
+        margin-left: 1px
+        margin-right: 1px
+
+.loader_style
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: rgba(0,0,0,0.3);
+  padding-top: 245px;
+  z-index: 1;
