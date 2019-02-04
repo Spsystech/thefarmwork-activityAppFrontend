@@ -25,9 +25,9 @@ class Home extends React.PureComponent {
             modal: false,
             Id: null,
             environment: '',
-            filedataform: '',
+            filedateform: '',
             activitytype: '',
-            filedatato: '',
+            filedateto: '',
             filedirection: '',
             requesttype: ''
         };
@@ -45,10 +45,10 @@ class Home extends React.PureComponent {
   componentDidMount(){
     let queryParams = {};
     queryParams.Environment = this.state.environment;
-    queryParams.FileDate = this.state.filedataform;
+    queryParams.FileDateTo = this.state.filedateform;
     queryParams.FileDirection = this.state.filedirection;
     queryParams.RequestType = this.state.requesttype;
-    queryParams.RetentionTime = this.state.filedatato;
+    queryParams.FileDateFrom = this.state.filedateto;
     queryParams.ActivityType = this.state.activitytype;
     let queryData = Object.keys(queryParams).map(key => key + '=' + queryParams[key]).join('&');   
     this.props.getListData(queryData);
@@ -101,10 +101,10 @@ class Home extends React.PureComponent {
   onFilterSubmit = () => {
     let queryParams = {};
       queryParams.Environment = this.state.environment;
-      queryParams.FileDate = this.state.filedataform;
+      queryParams.FileDateFrom = this.state.filedateform ? moment(this.state.filedateform).format('YYYYMMDDHHmmss'): '';
       queryParams.FileDirection = this.state.filedirection;
       queryParams.RequestType = this.state.requesttype;
-      queryParams.RetentionTime = this.state.filedatato;
+      queryParams.FileDateTo = this.state.filedateto ? moment(this.state.filedateto).format('YYYYMMDDHHmmss'): '';
       queryParams.ActivityType = this.state.activitytype;
       let queryData = Object.keys(queryParams).map(key => key + '=' + queryParams[key]).join('&');   
       this.props.getListData(queryData);
@@ -113,19 +113,19 @@ class Home extends React.PureComponent {
   onResetSubmit = () => {
       let queryParams = {};
       queryParams.Environment = '';
-      queryParams.FileDate = '';
+      queryParams.FileDateFrom = '';
       queryParams.FileDirection = '';
       queryParams.RequestType = '';
-      queryParams.RetentionTime = '';
+      queryParams.FileDateTo = '';
       queryParams.ActivityType = '';
       let queryData = Object.keys(queryParams).map(key => key + '=' + queryParams[key]).join('&');   
       this.props.getListData(queryData);
       this.setState({
         environment: '',
-        filedataform:'',
+        filedateform:'',
         filedirection: '',
         requesttype: '',
-        filedatato: '',
+        filedateto: '',
         activitytype: ''
     })
   } 
@@ -186,21 +186,27 @@ class Home extends React.PureComponent {
         let reslink = `${baseURL}/download?Id=${props.original.Id}&FileType=ResponseFile`
         let reqlink = `${baseURL}/download?Id=${props.original.Id}&FileType=RequestFile`
         let filelink = `${baseURL}/download?Id=${props.original.Id}&FileType=File`
-        return  (<div>
+        return  (<div> 
+         {props.original.ActivityType == 'Ws' ? 
+         <div>
          {props.original.ResponseFile &&
           <div> <a href={reslink} target="blank">
           <i className="fa fa-download"></i> Download  Response </a> 
           </div>
-         }
+         }          
         {props.original.RequestFile && 
          <div> <a href={reqlink} target="blank"> 
          <i className="fa fa-download"></i> Download Request</a> 
          </div>
-         }
+         } 
+         </div> :
+         <div>
         {props.original.File &&
         <div> <a  href={filelink} target="blank" onClick={this.downloadData}> 
         <i className="fa fa-download"></i> Download File </a> 
         </div> }
+        </div>
+         }
         </div>)
       }
     }, 
@@ -219,11 +225,13 @@ class Home extends React.PureComponent {
     }]
     return (
       <React.Fragment>
-       {isLoading && <LoadingSpinner/>}
+      {isLoading && <LoadingSpinner />}
       <Container className="customTablePage">
         <Row className="mb-2">
           <Col md={6} sm={6} xs={6} className="fontBold">Filter Activity</Col>
+         {userprofile && userprofile.is_admin == 'True'? 
           <Col md={6} sm={6} xs={6} className="text-right fontBold"> Customer Code</Col>
+          : ''}
         </Row>
         <Row className="mb-2">
           <Col md={5} xs={12}>
@@ -238,14 +246,16 @@ class Home extends React.PureComponent {
             <Row>
               <Col md={4} xs={12}>File Date Form</Col>
               <Col md={8} xs={12}>
-               <Input type="date" name="filedataform" id="filedataform" value={this.state.filedataform} placeholder="File Date Form" onChange={this.onFilterChange}/>
+               <Input type="date" name="filedateform" id="filedateform" value={this.state.filedateform} placeholder="File Date Form" onChange={this.onFilterChange}/>
               </Col>
             </Row>
           </Col>
           <Col md={2} xs={12}>
             <Row>
               <Col md={12} xs={12} className="text-right">
-                <Label className="textcolor p-1">{userprofile && userprofile.is_admin ? userprofile.company_code : ''}</Label>  
+              {userprofile && userprofile.is_admin == 'True'?
+                <Label className="textcolor p-1"> {userprofile.company_code}</Label>  
+                : ''}
               </Col>
             </Row> 
           </Col>
@@ -264,7 +274,7 @@ class Home extends React.PureComponent {
             <Row>
               <Col md={4}>File Date To</Col>
               <Col md={8}>
-               <Input  type="date" name="filedatato" id="filedatato" value={this.state.filedatato} onChange={this.onFilterChange}/>
+               <Input  type="date" name="filedateto" id="filedateto" value={this.state.filedateto} onChange={this.onFilterChange}/>
               </Col>
             </Row>
           </Col>
@@ -305,8 +315,8 @@ class Home extends React.PureComponent {
        {/* Row 4 Msg Card */}
         <Row className="mb-2 mt-4">
           <Col md={12}>
-            {userprofile && userprofile.is_admin ? 
-              <Card className="textcolor fontBold"> Message: The Screen is for Admin Users</Card>
+            {userprofile && userprofile.is_admin == 'True'? 
+              <Card className="cardfix textcolor fontBold"> Message: The Screen is for Admin Users</Card>
              : ''}
           </Col>
         </Row>  
@@ -318,6 +328,7 @@ class Home extends React.PureComponent {
             defaultPageSize={5}
             data={listDat}
             columns={columns}
+            loading={false}
             />
           </Col>
         </Row>  
