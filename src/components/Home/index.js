@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { Field,reduxForm } from "redux-form";
 import LoadingSpinner from '../LoadingSpinner';
 import { withRouter } from "react-router-dom";
+import Select from 'react-select';
 import ReactTable from 'react-table';
 import {getListData, getDownloadData, getUserProfile, postRetention} from '../../actions/homeActions';
 import './style.sass';
@@ -43,6 +44,7 @@ class Home extends React.PureComponent {
   }
 
   componentDidMount(){
+    this.props.getUserProfile();
     let queryParams = {};
     queryParams.Environment = this.state.environment;
     queryParams.FileDateTo = this.state.filedateform;
@@ -52,7 +54,6 @@ class Home extends React.PureComponent {
     queryParams.ActivityType = this.state.activitytype;
     let queryData = Object.keys(queryParams).map(key => key + '=' + queryParams[key]).join('&');   
     this.props.getListData(queryData);
-    this.props.getUserProfile();
   }
 
   toggle(){
@@ -100,12 +101,12 @@ class Home extends React.PureComponent {
 
   onFilterSubmit = () => {
     let queryParams = {};
-      queryParams.Environment = this.state.environment;
+      queryParams.Environment = this.state.environment.value ? this.state.environment.value : '' ;
       queryParams.FileDateFrom = this.state.filedateform ? moment(this.state.filedateform).format('YYYYMMDDHHmmss'): '';
-      queryParams.FileDirection = this.state.filedirection;
-      queryParams.RequestType = this.state.requesttype;
+      queryParams.FileDirection = this.state.filedirection.value ? this.state.filedirection.value : '';
+      queryParams.RequestType = this.state.requesttype.value ? this.state.requesttype.value : '' ;
       queryParams.FileDateTo = this.state.filedateto ? moment(this.state.filedateto).format('YYYYMMDDHHmmss'): '';
-      queryParams.ActivityType = this.state.activitytype;
+      queryParams.ActivityType = this.state.activitytype.value ? this.state.activitytype.value : '';
       let queryData = Object.keys(queryParams).map(key => key + '=' + queryParams[key]).join('&');   
       this.props.getListData(queryData);
   }
@@ -136,10 +137,41 @@ class Home extends React.PureComponent {
     })
   }
 
+
+
   render() { 
   const {home, handleSubmit} = this.props;
   const {isLoading} = home;
-  const userprofile = this.props.home.userprofileData.data;
+  const userprofile = this.props.home.userprofileData.data; 
+  const environment_value_array = userprofile && userprofile.environment_list;
+  const activity_type_array = userprofile && userprofile.activity_type;
+  const file_direction_array = userprofile && userprofile.file_direction;
+  const request_type_array = userprofile && userprofile.request_type;
+  let environment_value = [];
+  if(environment_value_array){
+    environment_value_array.map((item) => {
+      environment_value.push({value:item, label:item});
+    })
+  }
+  let datalist = [];
+  let activity_type = [];
+  if(activity_type_array){
+    activity_type_array.map((item) => {
+      activity_type.push({value:item, label:item});
+    })
+  }
+  let file_direction = [];
+  if(file_direction_array){
+    file_direction_array.map((item) => {
+      file_direction.push({value:item, label:item});
+    })
+  }
+  let request_type = [];
+  if(request_type_array){
+    request_type_array.map((item) => {
+      request_type.push({value:item, label:item});
+    })
+  }
   const listDat = this.props.home && this.props.home.listData && this.props.home.listData.data; 
   const columns = [{
       Header: 'File date',
@@ -181,7 +213,7 @@ class Home extends React.PureComponent {
       Header: 'Action',
       className: 'text-center',
       filterable: false,
-      width:180,
+      maxWidth:220,
       Cell: (props) => {  
         let reslink = `${baseURL}/download?Id=${props.original.Id}&FileType=ResponseFile`
         let reqlink = `${baseURL}/download?Id=${props.original.Id}&FileType=RequestFile`
@@ -238,7 +270,13 @@ class Home extends React.PureComponent {
             <Row>
               <Col md={4} xs={12}>Environment</Col>
               <Col md={8} xs={12}>
-                <Input type="text" name="environment" id="environment" value={this.state.environment} placeholder="Environment" onChange={this.onFilterChange}/>
+                <Select 
+                 id="environment"
+                 value={this.state.environment}
+                 name="environment"
+                 onChange={(val)=> {this.onFilterChange({target: {name:'environment', value:val}})}}
+                 options={environment_value}
+                />
               </Col>
             </Row>
           </Col>
@@ -266,7 +304,13 @@ class Home extends React.PureComponent {
             <Row>
               <Col md={4}>Activity Type</Col>
               <Col md={8}>
-                <Input type="text" name="activitytype" id="activitytype" value={this.state.activitytype} placeholder="Activity Type" onChange={this.onFilterChange}/>
+                <Select 
+                 id="activitytype"
+                 value={this.state.activitytype}
+                 name="activitytype"
+                 onChange={(val)=> {this.onFilterChange({target: { name:'activitytype', value:val }})}}
+                 options={activity_type}
+                />
               </Col>
             </Row>
           </Col>
@@ -292,7 +336,13 @@ class Home extends React.PureComponent {
             <Row>
               <Col md={4}>File Direction</Col>
               <Col md={8}>
-                <Input type="text" name="filedirection" id="filedirection" value={this.state.filedirection} onChange={this.onFilterChange} placeholder="File Direction"/>
+              <Select 
+                 id="filedirection"
+                 value={this.state.filedirection}
+                 name="filedirection"
+                 onChange={(val)=> {this.onFilterChange({target: { name:'filedirection', value: val }})}}
+                 options={file_direction}
+                />
               </Col>
             </Row>
           </Col>
@@ -300,7 +350,13 @@ class Home extends React.PureComponent {
             <Row>
               <Col md={4}>Request Type</Col>
               <Col md={8}>
-                <Input type="text" name="requesttype" id="requesttype" value={this.state.requesttype} onChange={this.onFilterChange} placeholder="Request Type"/>
+                <Select 
+                 id="requesttype"
+                 value={this.state.requesttype}
+                 name="requesttype"
+                 onChange={(val)=> {this.onFilterChange({target: { name:'requesttype', value: val }})}}
+                 options={request_type}
+                />
               </Col>
             </Row>
           </Col>
@@ -323,7 +379,7 @@ class Home extends React.PureComponent {
         {/* Row 4 React Table */}
         <Row className="mb-2">
           <Col md={12}>
-           <ReactTable className='react_table'
+           <ReactTable
             pageSizeOptions={[5, 10, 20, 25, 50, 100]}
             defaultPageSize={5}
             data={listDat}
