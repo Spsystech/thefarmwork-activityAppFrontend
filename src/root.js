@@ -7,7 +7,7 @@ import axios from 'axios';
 import Home from './components/Home';
 
 const baseURL = `${window.location.origin}/api`;
-//const baseURL = `http://192.168.1.165:5000/api`;
+// const baseURL = `http://192.168.1.165:5000/api`;
 
 export default class Main extends Component{
   constructor(props){

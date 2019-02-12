@@ -16,7 +16,6 @@ import {getListData, getDownloadData, getUserProfile, postRetention} from '../..
 import './style.sass';
 import {baseURL} from '../../actions/api.js';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
 import appConstants from '../../helpers/constants';
 
 class Home extends React.PureComponent {

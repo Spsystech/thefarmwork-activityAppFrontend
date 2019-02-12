@@ -7,8 +7,6 @@ import { Route, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import Proptypes from 'prop-types';
 import Main from './root';
-import moment from 'moment';
-import momentLocaliser from 'react-widgets-moment';
 // Styles
 // Import Font Awesome Icons Set
 import 'font-awesome/css/font-awesome.min.css';
@@ -19,13 +17,15 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'react-toastify/dist/ReactToastify.min.css';
 import 'react-table/react-table.css'
 import 'react-widgets/dist/css/react-widgets.css'
+import momentLocaliser from './react-widgets-moment';
+
+momentLocaliser(moment);
+
 // scenes
 import Home from './components/Home';
 
 import configureStore from './store';
 import { PersistGate } from 'redux-persist/integration/react'
-
-momentLocaliser(moment)
 
 const store = configureStore();
 
