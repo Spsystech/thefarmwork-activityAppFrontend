@@ -9,7 +9,7 @@ import Proptypes from 'prop-types';
 import Main from './root';
 // Styles
 // Import Font Awesome Icons Set
-import 'font-awesome/css/font-awesome.min.css';
+//import 'font-awesome/css/font-awesome.min.css';
 // Import Main styles for this application
 import '../scss/style.scss';
 import '../assets/style/app.sass';
@@ -20,6 +20,7 @@ import 'react-widgets/dist/css/react-widgets.css'
 import momentLocaliser from './react-widgets-moment';
 
 momentLocaliser(moment);
+moment.tz.add('Central Standard Time|PST PDT|80 70|0101|1Lzm0 1zb0 Op0');
 
 // scenes
 import Home from './components/Home';

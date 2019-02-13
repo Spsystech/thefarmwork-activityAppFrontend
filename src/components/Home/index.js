@@ -1,9 +1,7 @@
 import React from 'react';
 import { Row, Col ,Card, CardBody, Form, FormGroup, Label, Input, Button,
-  CardTitle, Alert ,ListGroup, ListGroupItem,Badge, Table, Modal,
-  ModalHeader, ModalBody, ModalFooter, UncontrolledTooltip ,Container} from 'reactstrap';
+    Modal, ModalHeader, ModalBody, ModalFooter, UncontrolledTooltip ,Container} from 'reactstrap';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import { toast, ToastContainer } from 'react-toastify';
 import { renderField, renderDateTimePicker } from "../../helpers/renderFields.js";
 import PropTypes from 'prop-types';
@@ -16,7 +14,6 @@ import {getListData, getDownloadData, getUserProfile, postRetention} from '../..
 import './style.sass';
 import {baseURL} from '../../actions/api.js';
 import { Link } from 'react-router-dom';
-import appConstants from '../../helpers/constants';
 
 class Home extends React.PureComponent {
   constructor(props) {
@@ -176,7 +173,7 @@ class Home extends React.PureComponent {
       Header: 'File date',
       className: 'text-center',
       width:140,
-      Cell: props => <span>{moment(props.original.FileDate, 'YYYYMMDDHHmmss').format('DD/MM/YYYY HH:mm')}</span>
+      Cell: props => <span>{moment.tz(props.original.FileDate, 'YYYYMMDDHHmmss', 'Central Standard Time').local().format('DD/MM/YYYY HH:mm')}</span>
     }, 
     {
       Header: 'Envirnoment',
