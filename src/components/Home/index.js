@@ -13,6 +13,7 @@ import ReactTable from 'react-table';
 import {getListData, getDownloadData, getUserProfile, postRetention} from '../../actions/homeActions';
 import './style.sass';
 import {baseURL} from '../../actions/api.js';
+import Header from '../Header';
 import { Link } from 'react-router-dom';
 
 class Home extends React.PureComponent {
@@ -138,7 +139,7 @@ class Home extends React.PureComponent {
   render() { 
   const {home, handleSubmit} = this.props;
   const {isLoading} = home;
-  const userprofile = this.props.home.userprofileData.data; 
+  const userprofile = this.props && this.props.home && this.props.home.userprofileData && this.props.home.userprofileData.data; 
   const environment_value_array = userprofile && userprofile.environment_list;
   const activity_type_array = userprofile && userprofile.activity_type;
   const file_direction_array = userprofile && userprofile.file_direction;
@@ -254,6 +255,7 @@ class Home extends React.PureComponent {
     return (
       <React.Fragment>
       {isLoading && <LoadingSpinner />}
+      <Header />
       <Container className="customTablePage">
         <Row className="mb-2">
           <Col md={6} sm={6} xs={6} className="fontBold">Filter Activity</Col>
